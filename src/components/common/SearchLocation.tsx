@@ -20,6 +20,7 @@ function SearchLocation({ onCoordinatesChange }: SearchLocationProps){
       try {
         const coord = await fetchCoordinates(cityName);
         onCoordinatesChange({ lat: coord.lat, lon: coord.lon });
+        setCityName("");
       } catch (error) {
         console.error("도시 정보를 찾을 수 없습니다.", error);
       }
