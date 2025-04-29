@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Button from "./Button";
 
 interface LocationFetcherProps {
@@ -21,10 +21,6 @@ const LocationFetcher: React.FC<LocationFetcherProps> = ({ onLocationChange }) =
       console.log("이 브라우저는 Geolocation을 지원하지 않습니다.");
     }
   };
-
-  useEffect(() => {
-    getLocation(); 
-  }, []);
 
   return <Button onClick={getLocation}>현재 위치 확인</Button>;
 };

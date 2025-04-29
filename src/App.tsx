@@ -4,6 +4,7 @@ import Error from "./components/common/Error";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GeolocationProvider } from "./components/context/GeolocationContext";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,9 @@ function App() {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <GeolocationProvider>
+          <RouterProvider router={router} />
+        </GeolocationProvider>
       </QueryClientProvider>
     </div>
   );

@@ -1,33 +1,36 @@
-import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWeather, WeatherData } from "../../api/weather";
-import LocationFetcher from "./LocationFeatcher"; 
-import { useState } from "react";
+import LocationFetcher from "./LocationFeatcher";
+import { CurrentWeatherStyle } from "../../styles/CurrentWeather.style";
+import { WeatherInfo } from "../../styles/CurrentWeather.style";
+import { useEffect, useState } from "react";
 
+interface CurrentWeatherProps {
+  lat: number;
+  lon: number;
+  onCoordinatesChange: (coords: { lat: number; lon: number }) => void;
+}
 
-function CurrentWeather() {
-  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(
-    null
-  );
+function CurrentWeather({ lat, lon, onCoordinatesChange }: CurrentWeatherProps) {
+  const [currentLat, setCurrentLat] = useState(lat);
+  const [currentLon, setCurrentLon] = useState(lon);
 
-  const handleLocationChange = (lat: number, lon: number) => {
-    setLocation({ lat, lon });
-  };
+  useEffect(() => {
+    setCurrentLat(lat);
+    setCurrentLon(lon);
+  }, [lat, lon]); 
 
   const { data, isLoading, error } = useQuery<WeatherData, Error>({
-    queryKey: ["currentWeather", location],
-    queryFn: async () => {
-      if (!location) {
-        throw new Error("위치 정보가 없습니다.");
-      }
-      return fetchWeather(location.lat, location.lon);
-    },
-    enabled: !!location,
+    queryKey: ["currentWeather", currentLat, currentLon],
+    queryFn: async () => fetchWeather(currentLat, currentLon),
+    enabled: currentLat !== undefined && currentLon !== undefined,
   });
 
-  // if (!location) {
-  //   return <div>위치 정보를 선택해주세요.</div>; 
-  // }
+  const handleLocationChange = (lat: number, lon: number) => {
+    setCurrentLat(lat);
+    setCurrentLon(lon);
+    onCoordinatesChange({ lat, lon }); 
+  };
 
   if (isLoading) return <div>로딩 중...</div>;
   if (error instanceof Error) return <div>에러 발생! {error.message}</div>;
@@ -39,29 +42,9 @@ function CurrentWeather() {
         <p className="temp">{data?.main?.temp} °C</p>
         <p className="description">{data?.weather[0]?.description}</p>
       </WeatherInfo>
-
       <LocationFetcher onLocationChange={handleLocationChange} />
     </CurrentWeatherStyle>
   );
 }
-
-const CurrentWeatherStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
-
-const WeatherInfo = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 30%;
-  max-width: 600px;
-  padding: 10px;
-
-  .temp {
-    font-weight: bold;
-  }
-`;
 
 export default CurrentWeather;
