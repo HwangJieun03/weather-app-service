@@ -26,7 +26,6 @@ const InputTextStyle = styled.div`
     border-radius: 4px;
     width: 100%;
     max-width: 300px;
-    margin-top: 10px;
   }
 `;
 
