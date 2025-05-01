@@ -17,6 +17,10 @@ export const ForecastStyle = styled.div`
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
     border: 1px solid #ddd;
+    
+    .week{
+      font-weight: bold;
+    }
   }
 
   div {
